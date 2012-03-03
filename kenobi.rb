@@ -31,10 +31,11 @@ end
 	@classifier.train(:should_not_answer, question)
 end
 
-puts @classifier.word_counts[:should_not_answer]
 
-# # Define what we want to classify, for this test
-# test = ""
+
+# Scrape AskMe for questions to classify
+# @question_scraper = AskMeQuestionScraper.new
+# @question_scraper.scrape
 
 # puts "Conclusion: #{classifier.classify(test)}"
 
