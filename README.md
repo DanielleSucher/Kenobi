@@ -7,10 +7,8 @@ This is the single best explanation of Bayes' Theorem I know of, incidentally - 
 
 And if you're interested in the history of Bayes' Theorem - http://lesswrong.com/lw/774/a_history_of_bayes_theorem/
 
-Dependencies:
-gem install stemmer
-gem install nokogiri
-gem install sqlite3
-gem install rspec (if you feel like running the tests for some weird reason, is all)
+Gems needed to run the damn thing: stemmer, nokogiri, open_uri
+
+maybe: sqlite3
 
 VERY in-progress.

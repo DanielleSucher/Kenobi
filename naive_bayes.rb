@@ -9,7 +9,7 @@ require 'nokogiri'
 # Currently set to actually just store the data in memory, not in sqlite
 
 class NaiveBayes
-    attr_accessor :word_counts
+    attr_accessor :word_counts, :best, :second_best
 
     # Initialize with a list of the categories for this clasifier
     def initialize(categories)
@@ -51,7 +51,7 @@ class NaiveBayes
     # Classify any given document into one of the categories
     def classify(document)
         sorted = probabilities(document).sort { |a,b| a[1]<=>b[1] } # sorts by value, asc
-        best,second_best = sorted.pop, sorted.pop
+        @best,@second_best = sorted.pop, sorted.pop
         best[1]/second_best[1] > @threshold ? result = best[0] : result = "Unknown"
     end
 

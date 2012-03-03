@@ -25,19 +25,8 @@ describe "NaiveBayes" do
 
 	describe "Classify" do
 		it "should calculate the correct classification" do
-			# category_probability("good") = 5/10
-			# category_probability("evil") = 5/10
-			# word stems in test: kitten, cat, love, life
-			# total good stems: 5
-			# total evil stems: 6
-			# kitten: good => 1, evil => 0
-			# cat: good => 3, evil => 1
-			# love: good => 0, evil => 0
-			# life: good =>1, evil => 1
-			# good: 2/5 * 4/5 * 1/5  * 2/5 = 0.0256
-			# evil: 1/6 * 2/6 * 1/6 * 2/6 = 0.0030864197530864196
 			@classifier.classify(@test).should be == "good"
-		end
+		end	
 	end
 end
 
