@@ -16,7 +16,7 @@ puts "First, you need to train Kenobi with your old AskMe answers!"
 # Set up a new Ask Metafilter naive bayesian classifier
 	# Could add several gradations, but not an infinitely fine range, basically.
 	# Let's start with should_answer including any question where at least one of the user's answers gets >3 favs 
-categories = [ :should_answer, :should_not_answer]
+categories = [ "should_answer", "should_not_answer"]
 @classifier = NaiveBayes.new(categories)
 
 # Scrape AskMe for a given user's answers
@@ -25,10 +25,10 @@ categories = [ :should_answer, :should_not_answer]
 
 # Train the classifier with the scrapings
 @answer_scraper.should_answer_training.each do |question|
-	@classifier.train(:should_answer, question)
+	@classifier.train("should_answer", question)
 end
 @answer_scraper.should_not_answer_training.each do |question|
-	@classifier.train(:should_not_answer, question)
+	@classifier.train("should_not_answer", question)
 end
 
 # Scrape AskMe for questions to classify
@@ -38,13 +38,13 @@ end
 # Classify the new questions
 puts "You should answer:"
 @question_scraper.new_questions.each do |question|
-	if @classifier.classify(question[:content]) == :should_answer
-		puts "'#{question[:content]}' - http://ask.metafilter.com#{question[:url]}}"
+	if @classifier.classify(question[:content]) == "should_answer"
+		puts "http://ask.metafilter.com#{question[:url]}"
 	end
 end
 puts "You should NOT answer:"
 @question_scraper.new_questions.each do |question|
-	if @classifier.classify(question[:content]) == :should_not_answer
-		puts "'#{question[:content]}' - http://ask.metafilter.com#{question[:url]}}"
+	if @classifier.classify(question[:content]) == "should_not_answer"
+		puts "http://ask.metafilter.com#{question[:url]}"
 	end
 end

@@ -26,7 +26,7 @@ class AskMeAnswerScraper
         if content[1].include?("favorites")
             content = content[0].split("posted by")[0]
         else
-            content = content[2].gsub(/\n|\r/,"")
+            content[2] ? content = content[2].gsub(/\n|\r/,"") : content = "" 
         end
     end
 
@@ -54,20 +54,29 @@ class AskMeAnswerScraper
         blockquotes = {}
         divs.each_with_index do |div,i|
             # answers = div.search('blockquote').text.gsub(/\r\n\s{2,}/," ").gsub(/\r\n/,"")
-            blockquotes[i] = div.search('blockquote')
+            if blockquotes[i]
+                blockquotes[i] << div.search('blockquote')
+            else
+                blockquotes[i] = div.search('blockquote')
+            end
         end
         
         # Now get the vote count for each div/question/answer 
-            # (what does this do when a user has multiple answers with favs to one question?)
         fav_counts = {}
         blockquotes.each do |key,val|
-            fav_counts[key] = val.css('span[id *= "favcnt"]').text.gsub(/\D/,"").to_i
+            val.each do |v|
+                if fav_counts[key]
+                    fav_counts[key] += v.css('span[id *= "favcnt"]').text.gsub(/\D/,"").to_i
+                else
+                    fav_counts[key] = v.css('span[id *= "favcnt"]').text.gsub(/\D/,"").to_i
+                end
+            end
         end
 
         # Add questions with vote counts > 2 to @should_answer_training and the rest to @should_not_answer_training
             # Consider changing the cutoff later
         questions.each_with_index do |question,i|
-            if fav_counts[i] > 2
+            if fav_counts[i] > 0
                 @should_answer_training << question
             else
                 @should_not_answer_training << question
