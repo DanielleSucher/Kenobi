@@ -8,6 +8,7 @@ require 'mechanize'
 require 'openssl'
 
 class AskMeAnswerScraper
+    attr_accessor :should_answer_training, :should_not_answer_training
 
     def initialize
         @agent = Mechanize.new
@@ -41,13 +42,14 @@ class AskMeAnswerScraper
         end
         
         # Now get the vote count for each div/question/answer 
-        # (what does this do when a user has multiple answers with favs to one question?)
+            # (what does this do when a user has multiple answers with favs to one question?)
         fav_counts = {}
         blockquotes.each do |key,val|
             fav_counts[key] = val.css('span[id *= "favcnt"]').text.gsub(/\D/,"").to_i
         end
 
         # Add questions with vote counts > 2 to @should_answer_training and the rest to @should_not_answer_training
+            # Consider changing the cutoff later
         questions.each_with_index do |question,i|
             if fav_counts[i] > 2
                 @should_answer_training << question
@@ -55,10 +57,6 @@ class AskMeAnswerScraper
                 @should_not_answer_training << question
             end
         end
-
-        # Look at the data while testing - delete this stuff once everything feels ready.
-        puts "Should answer: #{@should_answer_training}"
-        puts "Should NOT answer: #{@should_not_answer_training}"
     end
 
     def collect_urls
@@ -115,9 +113,7 @@ class AskMeAnswerScraper
         # Parse the remaining pages of answers
         # @askme_answer_page_urls.each do |url|
         #     @page = @agent.click(page.link_with(:href => url))
-        #     parse_askme_answers(@page)
+        #     self.parse_askme_answers(@page)
         # end
     end
 end
-
-AskMeAnswerScraper.new.scrape_logged_in

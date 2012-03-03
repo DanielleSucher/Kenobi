@@ -12,21 +12,26 @@ require 'nokogiri'
 require 'askme_answers_scraper'
 require 'askme_questions_scraper'
 
-AskMeAnswerScraper.new.scrape_logged_in
-
-# Test:
-
+puts "First, you need to train Kenobi with your old AskMe answers!"
 # Set up a new Ask Metafilter naive bayesian classifier
-# Could add several gradations, but not an infinitely fine range, basically.
-# Let's start with should_answer including any question where at least one of the user's answers gets >3 favs 
-categories = ["should_answer","should_not_answer"]
-classifier = NaiveBayes.new(categories)
+	# Could add several gradations, but not an infinitely fine range, basically.
+	# Let's start with should_answer including any question where at least one of the user's answers gets >3 favs 
+categories = [ :should_answer, :should_not_answer]
+@classifier = NaiveBayes.new(categories)
 
-# Scrape metafilter
+# Scrape AskMe for a given user's answers
+@answer_scraper = AskMeAnswerScraper.new
+@answer_scraper.scrape_logged_in
 
 # Train the classifier with the scrapings
-# something.each { |sample| classifier.train("should_answer", sample) }
-# something_else.each { |sample| classifier.train("should_not_answer", sample) }
+@answer_scraper.should_answer_training.each do |question|
+	@classifier.train(:should_answer, question)
+end
+@answer_scraper.should_not_answer_training.each do |question|
+	@classifier.train(:should_not_answer, question)
+end
+
+puts @classifier.word_counts[:should_not_answer]
 
 # # Define what we want to classify, for this test
 # test = ""
