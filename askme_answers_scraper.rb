@@ -7,10 +7,10 @@ require 'nokogiri'
 require 'mechanize'
 require 'openssl'
 
-agent = Mechanize.new
-agent.ca_file = "cacert.pem" 
+@agent = Mechanize.new
+@agent.ca_file = "cacert.pem" 
 
-def parse_askme_questions(page)
+def parse_askme_answers(page)
     # Parse the mechanize object
     page = page.parser
 
@@ -53,9 +53,9 @@ def parse_askme_questions(page)
     puts "Should NOT answer: #{@should_not_answer_training}"
 end
 
-def collect_urls(url)
+def collect_urls
     # adds url for each page of the user's askme answers to the array of urls
-    html = Nokogiri::HTML(open(url))
+    html = Nokogiri::HTML(open(@url))
     pages = []
     html.css('div[style="margin-left:30px;"] > a').each do |a|
         next_url = "/activity/#{@user_id}/comments/ask/" + a.text
@@ -64,23 +64,24 @@ def collect_urls(url)
 end
 
 def prep_for_scraping_answers
+    # Dave, for example: 106020
     puts "What's the user id of the user for whom you're trying to pick out good questions?"
     print ">> "
     @user_id = $stdin.gets.chomp
 
-    url="http://www.metafilter.com/activity/#{@user_id}/comments/ask/" 
+    @url="http://www.metafilter.com/activity/#{@user_id}/comments/ask/" 
     @should_answer_training = []
     @should_not_answer_training = []
 
     # create array of urls for the rest of the user's askme answer pages
     @askme_answer_page_urls = []
-    collect_urls(url)
+    collect_urls
 end
 
 def login_to_scrape_answers
 # Use Mechanize to connect securely 
-    @page = agent.get(url)
-    @page = agent.click(@page.link_with(:text => "Login"))
+    @page = @agent.get(@url)
+    @page = @agent.click(@page.link_with(:text => "Login"))
 
     # You have to log in before scraping in order to be able to see favcnt spans
     login_form = @page.form_with( :action => 'logging-in.mefi')
@@ -94,15 +95,19 @@ def login_to_scrape_answers
     @user_pass = $stdin.gets.chomp
     login_form.user_name = @user_name
     login_form.user_pass = @user_pass
-    @page = agent.submit(login_form, login_form.buttons.first)
+    @page = @agent.submit(login_form, login_form.buttons.first)
 end
 
+# do the prep work
+prep_for_scraping_answers
+login_to_scrape_answers
+
 # Parse the first page of answers
-@page = agent.click(page.link_with(:text => "Click here"))
-parse_askme_questions(page)
+@page = @agent.click(@page.link_with(:text => "Click here"))
+parse_askme_answers(@page)
 
 # Parse the remaining pages of answers
 # @askme_answer_page_urls.each do |url|
-#     page = agent.click(page.link_with(:href => url))
-#     parse_askme_questions(page)
+#     @page = @agent.click(page.link_with(:href => url))
+#     parse_askme_answers(@page)
 # end
