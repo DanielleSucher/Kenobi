@@ -18,7 +18,7 @@ class NaiveBayes
         @categories_documents = Hash.new # hash of category names => documents trained for each
         @total_documents = 0 # total number of documents trained
         @categories_words = Hash.new # hash of category names => documents trained for each
-        @threshold = 1.5 # how much more likely x has to be than y to bother declaring it
+        @threshold = 2.5 # how much more likely x has to be than y to bother declaring it
 
         categories.each do |category|
             @word_counts[category] = Hash.new 

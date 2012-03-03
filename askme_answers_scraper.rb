@@ -16,6 +16,7 @@ class AskMeAnswerScraper
         @should_answer_training = []
         @should_not_answer_training = []
         @askme_answer_page_urls = []
+        @askme_answer_page_urls = []
     end
 
     def scrape_question_text(page)
@@ -76,10 +77,9 @@ class AskMeAnswerScraper
 
     def collect_urls
         # adds url for each page of the user's askme answers to the array of urls
-        html = Nokogiri::HTML(open(@url))
-        pages = []
+        html = @page.parser
         html.css('div[style="margin-left:30px;"] > a').each do |a|
-            next_url = "/activity/#{@user_id}/comments/ask/" + a.text
+            next_url = "/activity/#{@user_id}/comments/ask/#{a.text}/" 
             @askme_answer_page_urls << next_url
         end
     end
@@ -93,7 +93,6 @@ class AskMeAnswerScraper
         @url="http://www.metafilter.com/activity/#{@user_id}/comments/ask/" 
 
         # create array of urls for the rest of the user's askme answer pages
-       self.collect_urls
     end
 
     def login_to_scrape_answers
@@ -124,11 +123,12 @@ class AskMeAnswerScraper
         self.login_to_scrape_answers
         # Parse the first page of answers
         @page = @agent.click(@page.link_with(:text => "Click here"))
+        self.collect_urls
         self.parse_askme_answers
         # Parse the remaining pages of answers
-        # @askme_answer_page_urls.each do |url|
-        #     @page = @agent.click(page.link_with(:href => url))
-        #     self.parse_askme_answers(@page)
-        # end
+        @askme_answer_page_urls.each do |url|
+            @page = @agent.click(@page.link_with(:href => url))
+            self.parse_askme_answers
+        end
     end
 end

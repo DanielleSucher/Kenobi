@@ -36,8 +36,15 @@ end
 @question_scraper.scrape
 
 # Classify the new questions
+puts "You should answer:"
 @question_scraper.new_questions.each do |question|
 	if @classifier.classify(question[:content]) == :should_answer
-		# Add that question to the hooray! list and print it out somehow
+		puts "'#{question[:content]}' - http://ask.metafilter.com#{question[:url]}}"
+	end
+end
+puts "You should NOT answer:"
+@question_scraper.new_questions.each do |question|
+	if @classifier.classify(question[:content]) == :should_not_answer
+		puts "'#{question[:content]}' - http://ask.metafilter.com#{question[:url]}}"
 	end
 end
