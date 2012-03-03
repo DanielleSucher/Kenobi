@@ -41,8 +41,7 @@ class AskMeAnswerScraper
             question_links << div.search('a')
         end
 
-        # adds the title of each question to the questions array
-            # Needs to be the question teaser from the next page, not the title, to match the question_scraper! Fix, stat!
+        # adds the above-the-cut text of each question to the questions array
         questions = []
         divs.each_with_index do |div,i|
             question_page = @agent.click(@page.link_with(:href => question_links[i][0]["href"]))

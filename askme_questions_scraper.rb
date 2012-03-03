@@ -47,15 +47,14 @@ class AskMeQuestionScraper
 
     def scrape
         # Parse the first page of questions
+        # puts "How many pages back do you want to analyze, after the front page?"
+        # count = $stdin.gets.chomp.to_i
         self.parse_askme_questions(@url)
         # Parse the remaining pages of answers
-        # @askme_answer_page_urls.each do |url|
-        #     @page = @agent.click(page.link_with(:href => url))
-        #     self.parse_askme_answers(@page)
+        # @next_page = @url
+        # count.times do
+        	# self.scrape_next_page(@next_page)
+        	# parse_askme_questions(@next_page)
         # end
     end
 end
-
-@test = AskMeQuestionScraper.new
-@test.scrape
-puts @test.new_questions[0]

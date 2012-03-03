@@ -31,14 +31,13 @@ end
 	@classifier.train(:should_not_answer, question)
 end
 
-
-
 # Scrape AskMe for questions to classify
-# @question_scraper = AskMeQuestionScraper.new
-# @question_scraper.scrape
+@question_scraper = AskMeQuestionScraper.new
+@question_scraper.scrape
 
-# puts "Conclusion: #{classifier.classify(test)}"
-
-# puts "Scaled details: #{classifier.relative_odds(test)}"
-
-
+# Classify the new questions
+@question_scraper.new_questions.each do |question|
+	if @classifier.classify(question[:content]) == :should_answer
+		# Add that question to the hooray! list and print it out somehow
+	end
+end
