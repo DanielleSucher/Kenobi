@@ -17,6 +17,7 @@ class NaiveBayes
         @total_documents = 0 # total number of documents trained
         @categories_words = Hash.new # hash of category names => documents trained for each
         @threshold = 1.5 # how much more likely x has to be than y to bother declaring it
+        @total_occurrences = Hash.new
 
         categories.each do |category|
             @words[category] = Hash.new 
@@ -30,6 +31,8 @@ class NaiveBayes
         word_count(document).each do |word,count|
             @words[category][word] ||= 0 # Stemming here would be redundant
             @words[category][word] += count
+            @total_occurrences[word] ||= 0
+            @total_occurrences[word] += count
             @total_words += count
             @categories_words[category] += count
         end
@@ -85,7 +88,7 @@ class NaiveBayes
             # Except we pretend every occured at least once per category, to avoid errors when encountering
             # words never encountered during training.
             # So, it's: (times the word occurs in this category + 1)/total number of words in this category
-            (@words[category][word].to_f + 1)/@categories_words[category].to_f
+            this_category = (@words[category][word].to_f + 1)/(@total_occurrences[word].to_f + 1)
         end
 
         def document_probability(category,document)
