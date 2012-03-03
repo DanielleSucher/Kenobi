@@ -12,6 +12,8 @@ require 'nokogiri'
 require 'askme_answers_scraper'
 require 'askme_questions_scraper'
 
+AskMeAnswerScraper.new.scrape_logged_in
+
 # Test:
 
 # Set up a new Ask Metafilter naive bayesian classifier
