@@ -18,20 +18,36 @@ class AskMeAnswerScraper
         @askme_answer_page_urls = []
     end
 
+    def scrape_question_text(page)
+        html = page.parser
+        div = html.css('div.copy').first
+        content = div.text.split(/$/)
+        if content[1].include?("favorites")
+            content = content[0].split("posted by")[0]
+        else
+            content = content[2].gsub(/\n|\r/,"")
+        end
+    end
+
     def parse_askme_answers
         # Parse the mechanize object
-        @page = @page.parser
+        html = @page.parser
 
         # collect the title of each question
-        divs = @page.css('div.copy')
+        divs = html.css('div.copy')
         divs.pop #removes the next_page div from the end
         question_links = []
         divs.each do |div|
             question_links << div.search('a')
         end
+
+        # adds the title of each question to the questions array
+            # Needs to be the question teaser from the next page, not the title, to match the question_scraper! Fix, stat!
         questions = []
-        question_links.each do |link|
-            questions << link.first.text # adds the title of each question to the questions array
+        divs.each_with_index do |div,i|
+            question_page = @agent.click(@page.link_with(:href => question_links[i][0]["href"]))
+            content = self.scrape_question_text(question_page)
+            questions << content
         end
 
         # in each of those divs, each blockquote holds one answer
