@@ -86,9 +86,11 @@ class NaiveBayes
             # Basically the probability of a word in a category is the number of times it occurred 
             # in that category, divided by the number of words in that category altogether. 
             # Except we pretend every occured at least once per category, to avoid errors when encountering
-            # words never encountered during training.
-            # So, it's: (times the word occurs in this category + 1)/total number of words in this category
-            this_category = (@words[category][word].to_f + 1)/(@total_occurrences[word].to_f + 1)
+            # words never encountered during training. (In latest draft, 0.1 instead of 1)
+            # First draft: (times the word occurs in this category + 1)/total number of words in this category
+            # Dave's draft: this_category = (@words[category][word].to_f + 1)/(@total_occurrences[word].to_f + 1)
+            @words[category].has_key?(word) ? test_word = @words[category][word].to_f : test_word = 0.1
+            this_category = test_word/@categories_words[category]
         end
 
         def document_probability(category,document)
