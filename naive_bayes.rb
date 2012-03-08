@@ -2,7 +2,6 @@
 
 $:.unshift File.expand_path('.')
 require 'stemmer'
-require 'sqlite3'
 
 # Currently set to actually just store the data in memory, not in sqlite
 

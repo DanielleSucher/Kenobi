@@ -1,7 +1,6 @@
 # Scraper to grab new AskMe questions
 
 $:.unshift File.expand_path('.')
-require 'sqlite3'
 require 'open-uri'
 require 'nokogiri'
 

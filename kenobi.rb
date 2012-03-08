@@ -6,7 +6,6 @@
 $:.unshift File.expand_path('.')
 require 'stemmer'
 require 'naive_bayes'
-require 'sqlite3'
 require 'open-uri'
 require 'nokogiri'
 require 'askme_answers_scraper'

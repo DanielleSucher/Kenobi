@@ -7,6 +7,7 @@ This is the single best explanation of Bayes' Theorem I know of, incidentally - 
 
 And if you're interested in the history of Bayes' Theorem - http://lesswrong.com/lw/774/a_history_of_bayes_theorem/
 
-Gems needed to run the damn thing: stemmer, nokogiri, open_uri, mechanize, sqlite3 (eventually)
-
-VERY in-progress. It can scrape a user's answers into memory at the moment, and the classifier works and passes tests, is all.
+Gems needed to run the damn thing (install them, then run "ruby kenobi.rb"): 
+stemmer
+nokogiri
+mechanize
