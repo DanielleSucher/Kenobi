@@ -42,18 +42,14 @@ class AskMeAnswerScraper
             question_links << div.search('a')
         end
 
-        # adds the above-the-cut text of each question to the questions array
         questions = []
+        blockquotes = {}
         divs.each_with_index do |div,i|
+            # adds the above-the-cut text of each question to the questions array
             question_page = @agent.click(@page.link_with(:href => question_links[i][0]["href"]))
             content = self.scrape_question_text(question_page)
             questions << content
-        end
-
-        # in each of those divs, each blockquote holds one answer
-        blockquotes = {}
-        divs.each_with_index do |div,i|
-            # answers = div.search('blockquote').text.gsub(/\r\n\s{2,}/," ").gsub(/\r\n/,"")
+            # in each of those divs, each blockquote holds one answer
             if blockquotes[i]
                 blockquotes[i] << div.search('blockquote')
             else

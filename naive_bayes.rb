@@ -45,20 +45,21 @@ class NaiveBayes
         odds = Hash.new
         @words.each_key do |category| # Each key means each of the categories, remember
             odds[category] = probability(category,document)
+            odds[category] = 0 if odds[category].nan?
         end
         odds
     end
 
     # Classify any given document into one of the categories
     def classify(document)
-        sorted = probabilities(document).sort { |a,b| a[1]<=>b[1] } # sorts by value, asc
+        sorted = self.probabilities(document).sort_by { |a,b| b } # sorts by value, asc (old: a[1]<=>b[1])
         best = sorted.pop
         second_best = sorted.pop
-        best[1]/second_best[1] > @threshold ? best[0] : "Unknown"
+        best[1]/second_best[1] > @threshold || second_best[1] == 0 ? best[0] : "Unknown"
     end
 
     def relative_odds(document) #  a complete set of relative odds rather than a single absolute odd
-        probs = probabilities(document).sort { |a,b| a[1]<=>b[1] } # sorts by value, asc
+        probs = probabilities(document).sort { |a,b| b } # sorts by value, asc (old: a[1]<=>b[1])
         totals = 0
         relative = {}
         probs.each { |prob| totals += prob[1]}
@@ -89,7 +90,7 @@ class NaiveBayes
             # words never encountered during training. (In latest draft, 0.1 instead of 1)
             # First draft: (times the word occurs in this category + 1)/total number of words in this category
             # Dave's draft: this_category = (@words[category][word].to_f + 1)/(@total_occurrences[word].to_f + 1)
-            @words[category].has_key?(word) ? test_word = @words[category][word].to_f : test_word = 0.1
+            @words[category].has_key?(word) ? test_word = @words[category][word].to_f : test_word = 0.0000000000000001
             this_category = test_word/@categories_words[category]
         end
 
@@ -119,5 +120,5 @@ class NaiveBayes
 
         # SIGNIFICANTLY trimmed down
         COMMON_WORDS = ['a','an','and','the','them','he','him','her','she','their','we',
-            'to','be','some','on','or','by','i']
+            'to','be','some','on','or','by','i','this','that','for','in','into','what']
 end

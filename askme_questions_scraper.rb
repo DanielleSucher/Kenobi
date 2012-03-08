@@ -20,19 +20,14 @@ class AskMeQuestionScraper
         # collect the divs of each question
         divs = html.css('div.post')
 
-        # collect the relative url for each question
-        question_links = []
         divs.each_with_index do |div,i|
-             span = div.search('span').first
-             span = span.search('a')[0]['href']
-             question_links << span
-        end
-
-        # collect the text for each question
-        divs.each_with_index do |div,i|
+            # collect the relative url for each question
+            span = div.search('span').first
+            span = span.search('a')[0]['href']
+            # collect the text for each question
         	content = div.text
         	content = content.split("[more inside]")[0]
-            @new_questions << { :content => content, :url => question_links[i] }
+            @new_questions << { :content => content, :url => span } unless span.include?('http://')
         end
     end
 
