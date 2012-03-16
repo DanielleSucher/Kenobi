@@ -36,16 +36,13 @@ class AskMeAnswerScraper
         # collect the title of each question
         divs = html.css('div.copy')
         divs.pop #removes the next_page div from the end
-        question_links = []
-        divs.each do |div|
-            question_links << div.search('a')
-        end
 
         questions = []
         blockquotes = {}
         divs.each_with_index do |div,i|
             # adds the above-the-cut text of each question to the questions array
-            question_page = @agent.click(@page.link_with(:href => question_links[i][0]["href"]))
+            # question_page = @agent.click(@page.link_with(:href => question_links[i][0]["href"]))
+            question_page = @agent.click(@page.link_with(:href => div.search('a')[0]["href"]))
             content = self.scrape_question_text(question_page)
             questions << content
             # in each of those divs, each blockquote holds one answer
@@ -66,15 +63,12 @@ class AskMeAnswerScraper
                     fav_counts[key] = v.css('span[id *= "favcnt"]').text.gsub(/\D/,"").to_i
                 end
             end
-        end
-
-        # Add questions with vote counts > 2 to @should_answer_training and the rest to @should_not_answer_training
-            # Consider changing the cutoff later
-        questions.each_with_index do |question,i|
-            if fav_counts[i] > 0
-                @should_answer_training << question
+            # currently sorts questions where the user's answer(s) got any favorites into should, 
+            # and only those with no favs at all into should_not
+            if fav_counts[key] > 0
+                @should_answer_training << questions[key]
             else
-                @should_not_answer_training << question
+                @should_not_answer_training << questions[key]
             end
         end
     end

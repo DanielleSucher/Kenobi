@@ -41,14 +41,14 @@ class AskMeQuestionScraper
 
     def scrape
         # Parse the first page of questions
-        # puts "How many pages back do you want to analyze, after the front page?"
-        # count = $stdin.gets.chomp.to_i
+        puts "How many pages back do you want to analyze, not including the front page?"
+        count = $stdin.gets.chomp.to_i
         self.parse_askme_questions(@url)
         # Parse the remaining pages of answers
-        # @next_page = @url
-        # count.times do
-        	# self.scrape_next_page(@next_page)
-        	# parse_askme_questions(@next_page)
-        # end
+        @next_page = @url
+        count.times do
+        	self.scrape_next_page(@next_page)
+        	parse_askme_questions(@next_page)
+        end
     end
 end
